@@ -18,10 +18,12 @@ app.add_middleware(
 # Создание таблиц при первом запуске
 Base.metadata.create_all(bind=engine)
 
+
 # Инициализация таблицы птиц
 @app.on_event("startup")
 def on_startup():
     init_birds()
+
 
 # Регистрация роутеров
 app.include_router(sensor_versions.router)

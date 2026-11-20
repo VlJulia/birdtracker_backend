@@ -13,6 +13,7 @@ from app.core.schemas import CoordinateResponse
 logger = getLogger(__name__)
 router = APIRouter()
 
+
 @router.post("/sensors/binary", status_code=201)
 async def receive_binary(request: Request):
     logger.info(f"Processing request from {request.client.host}")
@@ -23,6 +24,7 @@ async def receive_binary(request: Request):
         raise HTTPException(400, detail=str(exc))
     return JSONResponse(content=processed)
 
+
 @router.get("/sensors/data", response_model=List[CoordinateResponse])
 async def get_coordinates_by_sensor(
     internal_id: str,
@@ -30,22 +32,16 @@ async def get_coordinates_by_sensor(
     date_to: Optional[datetime] = None,
     limit: Optional[int] = None,
     order: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
-    stmt = select(SensorMessage).where(
-        SensorMessage.device_id == internal_id
-    )
+    stmt = select(SensorMessage).where(SensorMessage.device_id == internal_id)
 
     if date_from is not None:
-        stmt = stmt.where(
-            SensorMessage.timestamp >= int(date_from.timestamp())
-        )
+        stmt = stmt.where(SensorMessage.timestamp >= int(date_from.timestamp()))
 
     if date_to is not None:
-        stmt = stmt.where(
-            SensorMessage.timestamp <= int(date_to.timestamp())
-        )
-        
+        stmt = stmt.where(SensorMessage.timestamp <= int(date_to.timestamp()))
+
     if order == "asc":
         stmt = stmt.order_by(SensorMessage.timestamp.asc())
     elif order == "desc":
@@ -64,5 +60,6 @@ async def get_coordinates_by_sensor(
             longitude=r.longitude,
             timestamp=r.timestamp,
             light=(r.data.get("light") if r.data else None),
-        ) for r in records
+        )
+        for r in records
     ]

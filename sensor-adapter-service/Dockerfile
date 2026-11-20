@@ -14,4 +14,4 @@ RUN
 EXPOSE ${APP_PORT}
 
 
-CMD uvicorn app.main:app --host ${APP_HOST} --port ${APP_PORT} --reload
+CMD ["sh", "-c", "uvicorn app.main:app --host ${APP_HOST} --port ${APP_PORT} --reload"]
