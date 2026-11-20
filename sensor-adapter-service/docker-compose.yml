@@ -6,6 +6,7 @@ services:
     ports:
       - "8002:${APP_PORT}"       # HTTP API
       - "9999:${APP_TCP_PORT}"       # TCP сервер
+      - "9998:${APP_UDP_PORT}/udp"       # UDP сервер
     volumes:
       - ./app:/code/app
       - ./tests:/code/tests
@@ -27,6 +28,8 @@ services:
       - "5435:${POSTGRES_PORT}"
     networks:
       - shared-net
+
+  
 
 volumes:
   postgres_data_sensors:

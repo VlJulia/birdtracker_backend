@@ -21,9 +21,7 @@ async def fetch_sensor_data(
 ) -> List[SensorDataResponse]:
     """Запрос данных к удалённому сервису."""
 
-    params = {
-        "internal_id": internal_id
-    }
+    params = {"internal_id": internal_id}
 
     if date_from is not None:
         params["date_from"] = date_from.isoformat()

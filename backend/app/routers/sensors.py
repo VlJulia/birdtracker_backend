@@ -12,11 +12,9 @@ def create_sensor(sensor_data: SensorCreate, db: Session = Depends(get_db)):
     version = db.query(SensorVersion).filter_by(version=sensor_data.version).first()
     if not version:
         raise HTTPException(status_code=404, detail="Sensor version not found")
-    
+
     sensor = Sensor(
-        internal_id=sensor_data.internal_id,
-        name=sensor_data.name,
-        version=version
+        internal_id=sensor_data.internal_id, name=sensor_data.name, version=version
     )
     db.add(sensor)
     db.commit()

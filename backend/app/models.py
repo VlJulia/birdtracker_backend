@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from app.database import Base
-from sqlalchemy import (Boolean, Column, DateTime, Float, ForeignKey, Integer,
-                        String)
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 
@@ -11,6 +10,7 @@ class SensorVersion(Base):
     id = Column(Integer, primary_key=True, index=True)
     version = Column(String, unique=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
 
 class Sensor(Base):
     __tablename__ = "sensors"
@@ -22,10 +22,12 @@ class Sensor(Base):
 
     version = relationship("SensorVersion")
 
+
 class Bird(Base):
     __tablename__ = "birds"
     id = Column(Integer, primary_key=True, index=True)
     bird_name = Column(String, unique=True)
+
 
 class SensorData(Base):
     __tablename__ = "sensor_data"

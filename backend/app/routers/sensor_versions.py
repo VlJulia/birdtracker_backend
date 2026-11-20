@@ -8,11 +8,14 @@ router = APIRouter(prefix="/sensor-version", tags=["Sensor Version"])
 
 
 @router.post("/create")
-def create_sensor_version(version_data: SensorVersionCreate, db: Session = Depends(get_db)):
+def create_sensor_version(
+    version_data: SensorVersionCreate, db: Session = Depends(get_db)
+):
     version = SensorVersion(version=version_data.version)
     db.add(version)
     db.commit()
     return {"status": "ok"}
+
 
 @router.get("/get_data")
 async def get_sensor_versions(limit: int = 10, db: Session = Depends(get_db)):
