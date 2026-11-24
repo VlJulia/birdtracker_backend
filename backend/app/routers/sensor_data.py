@@ -1,14 +1,13 @@
 from datetime import datetime
-from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Sensor, SensorData
-from app.schemas import CoordinateResponse, SensorDataCreate, SensorDataBatchCreate
-from app.utils import calculate_avg_distance, calculate_avg_speed
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import and_
-from sqlalchemy.orm import Session
+from app.schemas import CoordinateResponse, SensorDataBatchCreate, SensorDataCreate
 from app.sensor_data import fetch_sensor_data
+from app.utils import calculate_avg_distance, calculate_avg_speed
 
 SENSOR_ADAPTER_URL = "http://sensor-adapter:8002"
 
@@ -59,7 +58,7 @@ async def get_avg_speed(
     internal_id: str,
     date_from: datetime,
     date_to: datetime,
-    times_of_day: Optional[bool] = False,
+    times_of_day: bool | None = False,
 ):
     records = await fetch_sensor_data(
         SENSOR_ADAPTER_URL, internal_id, date_from, date_to, order="asc"
@@ -77,7 +76,7 @@ async def get_avg_distance(
     internal_id: str,
     date_from: datetime,
     date_to: datetime,
-    times_of_day: Optional[bool] = False,
+    times_of_day: bool | None = False,
 ):
     records = await fetch_sensor_data(
         SENSOR_ADAPTER_URL, internal_id, date_from, date_to, order="asc"
@@ -90,7 +89,7 @@ async def get_avg_distance(
     return {"average_distance_km": avg_distance}
 
 
-@router.get("/coordinates/by-sensor/", response_model=List[CoordinateResponse])
+@router.get("/coordinates/by-sensor/", response_model=list[CoordinateResponse])
 async def get_coordinates_by_sensor(
     internal_id: str, date_from: datetime, date_to: datetime
 ):

@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional, List
+
+from pydantic import BaseModel, Field
 
 
 class SensorVersionCreate(BaseModel):
@@ -34,7 +34,7 @@ class SensorDataBatchEntry(BaseModel):
 
 class SensorDataBatchCreate(BaseModel):
     internal_id: str
-    entries: List[SensorDataBatchEntry] = Field(min_length=1, max_length=128)
+    entries: list[SensorDataBatchEntry] = Field(min_length=1, max_length=128)
 
 
 class CoordinateResponse(BaseModel):

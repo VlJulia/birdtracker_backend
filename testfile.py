@@ -1,5 +1,4 @@
 import socket
-import time
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.settimeout(3.0)  # Важно: ставим таймаут, чтобы не ждать вечно
@@ -14,7 +13,7 @@ try:
 
 except ConnectionResetError:
     print("Ошибка 10054: Сервер не ответил (порт закрыт или контейнер не запущен).")
-except socket.timeout:
+except TimeoutError:
     print("Таймаут: Сервер не прислал ответ за 3 секунды.")
 finally:
     sock.close()
@@ -39,7 +38,7 @@ try:
 
 except ConnectionRefusedError:
     print("Ошибка: Сервер не запущен или порт закрыт.")
-except socket.timeout:
+except TimeoutError:
     print("Таймаут: Сервер не ответил за 3 секунды.")
 except Exception as e:
     print(f"Произошла ошибка: {e}")

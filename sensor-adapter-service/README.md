@@ -1,40 +1,31 @@
 # Sensor Adapter Service
-Сервис‐адаптер для приёма бинарных пакетов с сенсоров, проверки CRC32, декодирования сообщений типа 0x02 и сохранения результатов в PostgreSQL. Реализованы приём по HTTP (application/octet-stream) и через TCP-сервер на отдельном порту.
 
-### Переменные окружения
-```
-DATABASE_URL - строка подключения к PostgreSQL
-ENABLE_TCP_SERVER - запустить/отключить TCP-сервер
-```
+Принимает бинарные пакеты с трекеров, проверяет CRC-8 каждого сообщения и сохраняет сообщения типа `0x02` в PostgreSQL.
 
-### HTTP API
-#### POST /api/v1/sensors/binary
-Принимает бинарный пакет как тело запроса (Content-Type: application/octet-stream).
+Формат пакета описан в [binary-protocol.md](https://github.com/AlexixRugis/birdtracker/blob/main/docs/protocol/binary-protocol.md) в репозитории прошивки.
 
-**Ответ 201 Created:**
+## Приём пакетов
 
-```json
-{
-  "device_id": "0a0b0c0d0e0f101112131415",
-  "saved_messages": 1
-}
-```
-*Пример curl*
+| Канал | Куда отправлять | Ответ |
+|-------|-----------------|-------|
+| HTTP | `POST /api/v1/sensors/binary`, пакет в теле запроса | `{"device_id": "...", "saved_messages": 1}` |
+| TCP | порт 9999, один пакет на соединение | `OK <n>` или `ERR <причина>` |
+| UDP | порт 9998, один пакет в датаграмме | `OK <n>` или `ERR <причина>` |
+
+`n` — число сохранённых сообщений. TCP и UDP включаются переменными `ENABLE_TCP_SERVER` и `ENABLE_UDP_SERVER`.
+
 ```bash
 curl -X POST \
      -H "Content-Type: application/octet-stream" \
      --data-binary @packet.bin \
      http://localhost:8002/api/v1/sensors/binary
 ```
-*TCP-протокол*
-Отправьте в сокет полный бинарный пакет.
-Сервер вернёт:
 
-```text
-OK <n>   # n – количество сохранённых сообщений
-```
-или
+## Чтение данных
 
-```text
-ERR <reason>
-```
+`GET /api/v1/sensors/data?internal_id=<device_id>` возвращает координаты устройства.
+Необязательные параметры: `date_from`, `date_to`, `limit`, `order` (`asc` или `desc`).
+
+## Настройка и запуск
+
+Переменные окружения перечислены в `.env_example`. Запуск, тесты и миграции описаны в [README в корне](../README.md).

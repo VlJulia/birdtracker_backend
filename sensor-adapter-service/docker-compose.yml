@@ -10,10 +10,12 @@ services:
     volumes:
       - ./app:/code/app
       - ./tests:/code/tests
+      - ./migrations:/code/migrations
     env_file:
       - ./.env
     depends_on:
-      - sensor_adapter_db
+      sensor_adapter_db:
+        condition: service_healthy
     networks:
       - shared-net
 
@@ -28,8 +30,12 @@ services:
       - "5435:${POSTGRES_PORT}"
     networks:
       - shared-net
-
-  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
 volumes:
   postgres_data_sensors:

@@ -1,16 +1,16 @@
-from fastapi import FastAPI
+import asyncio
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
 from app.api.http_endpoints import router as http_router
-from app.core.database import start_database
 from app.config.settings import settings
 from app.core.logs import init_logging
-import asyncio
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_logging()
-    await start_database()
 
     # --- TCP server -----------------------------------------------------------
     stop_event = None

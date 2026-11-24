@@ -1,13 +1,14 @@
-from typing import List, Optional
-from logging import getLogger
 from datetime import datetime
-from fastapi import APIRouter, Depends, Request, HTTPException, Query
+from logging import getLogger
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.adapters import adapter
-from app.core.models import SensorMessage
 from app.core.database import get_db
+from app.core.models import SensorMessage
 from app.core.schemas import CoordinateResponse
 
 logger = getLogger(__name__)
@@ -21,17 +22,17 @@ async def receive_binary(request: Request):
     try:
         processed = await adapter.process_packet(raw)
     except Exception as exc:
-        raise HTTPException(400, detail=str(exc))
+        raise HTTPException(400, detail=str(exc)) from exc
     return JSONResponse(content=processed)
 
 
-@router.get("/sensors/data", response_model=List[CoordinateResponse])
+@router.get("/sensors/data", response_model=list[CoordinateResponse])
 async def get_coordinates_by_sensor(
     internal_id: str,
-    date_from: Optional[datetime] = None,
-    date_to: Optional[datetime] = None,
-    limit: Optional[int] = None,
-    order: Optional[str] = None,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+    limit: int | None = None,
+    order: str | None = None,
     db: AsyncSession = Depends(get_db),
 ):
     stmt = select(SensorMessage).where(SensorMessage.device_id == internal_id)

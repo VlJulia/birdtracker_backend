@@ -1,10 +1,10 @@
 import os
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from pydantic import model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class _Settings(BaseSettings):
-
     APP_HOST: str = "0.0.0.0"
     APP_PORT: int = 8000
     APP_TCP_PORT: int = 9999

@@ -1,0 +1,18 @@
+target-version = "py311"
+src = ["backend", "sensor-adapter-service"]
+
+[lint]
+select = [
+    "E",     # pycodestyle
+    "W",
+    "F",     # pyflakes
+    "I",     # порядок импортов
+    "UP",    # устаревший синтаксис
+    "B",     # частые ошибки
+    "SIM",   # упрощения
+    "ASYNC", # ошибки в асинхронном коде
+]
+ignore = ["E501"]  # длину строк держит форматтер
+
+[lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends"]

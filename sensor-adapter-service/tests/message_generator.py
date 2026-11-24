@@ -1,5 +1,6 @@
 import struct
-from typing import Self, List
+from typing import Self
+
 from crcmod.predefined import mkCrcFun
 
 CRC8_FUNC = mkCrcFun("crc-8-maxim")
@@ -9,7 +10,7 @@ class MessageGenerator:
     __buffer: bytes
 
     def __init__(self):
-        self.__buffer = bytes()
+        self.__buffer = b""
 
     def get_buffer(self) -> bytes:
         return self.__buffer
@@ -46,9 +47,9 @@ class MessageGenerator:
         timestamp: int,
         latitude: float,
         longitude: float,
-        acc: List[int],
-        gyro: List[int],
-        mag: List[int],
+        acc: list[int],
+        gyro: list[int],
+        mag: list[int],
         light: float,
         temp: float,
     ) -> Self:
