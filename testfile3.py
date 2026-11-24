@@ -1,5 +1,6 @@
 import socket
 import struct
+
 from crcmod.predefined import mkCrcFun
 
 HEADER_FMT = "<12sH"
@@ -79,7 +80,7 @@ def main():
                 # Если получили ответ (например, заканчивается на \n), можно прервать цикл
                 if b"\n" in chunk:
                     break
-            except socket.timeout:
+            except TimeoutError:
                 print("Таймаут при чтении.")
                 break
 

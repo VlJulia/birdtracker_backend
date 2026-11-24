@@ -1,5 +1,4 @@
-from math import radians, cos, sin, asin, sqrt
-from datetime import datetime
+from math import asin, cos, radians, sin, sqrt
 
 
 # Haversine formula для расстояния между двумя GPS координатами

@@ -1,5 +1,4 @@
 import logging
-from app.config.settings import settings
 
 
 def init_logging() -> None:

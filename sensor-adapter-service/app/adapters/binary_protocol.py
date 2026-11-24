@@ -1,6 +1,7 @@
 import struct
 from logging import getLogger
-from typing import List, Dict, Any
+from typing import Any
+
 from crcmod.predefined import mkCrcFun
 
 logger = getLogger(__name__)
@@ -22,7 +23,7 @@ class BinaryProtocolParser:
     MSG_SENSOR_ALL_FMT = "<BIffhhhhhhhhhff"
     MSG_SENSOR_ALL_SIZE = struct.calcsize(MSG_SENSOR_ALL_FMT)
 
-    def parse_packet(self, raw: bytes, prot: str = "") -> Dict[str, Any]:
+    def parse_packet(self, raw: bytes, prot: str = "") -> dict[str, Any]:
         if len(raw) < self.HEADER_SIZE:
             logger.error(f"The packet is shorter than the header {prot}")
             raise ValueError("Пакет короче заголовка")
@@ -36,7 +37,7 @@ class BinaryProtocolParser:
             logger.error(f"Invalid message block length {prot}")
             raise ValueError("Неверная длина блока сообщений")
 
-        messages = self._decode_messages(body)
+        messages = self._decode_messages(body, prot)
 
         logger.info(f"Successfully decoded {len(messages)} messages {prot}")
 
@@ -44,8 +45,8 @@ class BinaryProtocolParser:
 
     # ------------------------------------------------------------------ #
 
-    def _decode_messages(self, body: bytes, prot: str = "") -> List[Dict[str, Any]]:
-        result: List[Dict[str, Any]] = []
+    def _decode_messages(self, body: bytes, prot: str = "") -> list[dict[str, Any]]:
+        result: list[dict[str, Any]] = []
         idx = 0
 
         while idx < len(body):
@@ -68,8 +69,7 @@ class BinaryProtocolParser:
             (crc_8,) = struct.unpack(
                 self.CRC_FMT,
                 body[
-                    idx
-                    + self.MSG_SENSOR_ALL_SIZE : idx
+                    idx + self.MSG_SENSOR_ALL_SIZE : idx
                     + self.MSG_SENSOR_ALL_SIZE
                     + self.CRC_SIZE
                 ],
@@ -93,7 +93,7 @@ class BinaryProtocolParser:
                 temp,
             ) = unpacked
 
-            if not CRC8_FUNC(body[idx : idx + self.MSG_SENSOR_ALL_SIZE]) == crc_8:
+            if CRC8_FUNC(body[idx : idx + self.MSG_SENSOR_ALL_SIZE]) != crc_8:
                 logger.error(f"The message has invalid crc8  {prot}")
                 raise ValueError("Неверная контрольная сумма сообщения")
 

@@ -1,6 +1,10 @@
 import unittest
-from tests.message_generator import MessageGenerator
+
 from app.adapters.binary_protocol import BinaryProtocolParser
+from tests.message_generator import MessageGenerator
+
+# float32 хранит около 7 значащих цифр, для значений из тестов это 5 знаков
+FLOAT_PLACES = 5
 
 
 class TestBinaryProtocolParser(unittest.TestCase):
@@ -137,11 +141,17 @@ class TestBinaryProtocolParser(unittest.TestCase):
         self.assertEqual(parsed_msg["gyroscope"], msg["gyroscope"])
         self.assertEqual(parsed_msg["magnetometer"], msg["magnetometer"])
 
-        # float-поля с допуском (7 знаков после запятой)
-        self.assertAlmostEqual(parsed_msg["latitude"], msg["latitude"], places=7)
-        self.assertAlmostEqual(parsed_msg["longitude"], msg["longitude"], places=7)
-        self.assertAlmostEqual(parsed_msg["light"], msg["light"], places=7)
-        self.assertAlmostEqual(parsed_msg["temperature"], msg["temperature"], places=7)
+        # float-поля с допуском
+        self.assertAlmostEqual(
+            parsed_msg["latitude"], msg["latitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg["longitude"], msg["longitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(parsed_msg["light"], msg["light"], places=FLOAT_PLACES)
+        self.assertAlmostEqual(
+            parsed_msg["temperature"], msg["temperature"], places=FLOAT_PLACES
+        )
 
     def test_break_on_0xFF(self):
 
@@ -292,12 +302,18 @@ class TestBinaryProtocolParser(unittest.TestCase):
         self.assertEqual(parsed_msg_1["gyroscope"], msg_1["gyroscope"])
         self.assertEqual(parsed_msg_1["magnetometer"], msg_1["magnetometer"])
 
-        # float-поля с допуском (5 знаков после запятой)
-        self.assertAlmostEqual(parsed_msg_1["latitude"], msg_1["latitude"], places=7)
-        self.assertAlmostEqual(parsed_msg_1["longitude"], msg_1["longitude"], places=7)
-        self.assertAlmostEqual(parsed_msg_1["light"], msg_1["light"], places=7)
+        # float-поля с допуском
         self.assertAlmostEqual(
-            parsed_msg_1["temperature"], msg_1["temperature"], places=7
+            parsed_msg_1["latitude"], msg_1["latitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_1["longitude"], msg_1["longitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_1["light"], msg_1["light"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_1["temperature"], msg_1["temperature"], places=FLOAT_PLACES
         )
 
         self.assertEqual(parsed_msg_2["timestamp"], msg_2["timestamp"])
@@ -305,12 +321,18 @@ class TestBinaryProtocolParser(unittest.TestCase):
         self.assertEqual(parsed_msg_2["gyroscope"], msg_2["gyroscope"])
         self.assertEqual(parsed_msg_2["magnetometer"], msg_2["magnetometer"])
 
-        # float-поля с допуском (5 знаков после запятой)
-        self.assertAlmostEqual(parsed_msg_2["latitude"], msg_2["latitude"], places=7)
-        self.assertAlmostEqual(parsed_msg_2["longitude"], msg_2["longitude"], places=7)
-        self.assertAlmostEqual(parsed_msg_2["light"], msg_2["light"], places=7)
+        # float-поля с допуском
         self.assertAlmostEqual(
-            parsed_msg_2["temperature"], msg_2["temperature"], places=7
+            parsed_msg_2["latitude"], msg_2["latitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_2["longitude"], msg_2["longitude"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_2["light"], msg_2["light"], places=FLOAT_PLACES
+        )
+        self.assertAlmostEqual(
+            parsed_msg_2["temperature"], msg_2["temperature"], places=FLOAT_PLACES
         )
 
 

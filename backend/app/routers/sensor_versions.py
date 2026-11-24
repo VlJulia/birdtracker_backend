@@ -1,8 +1,9 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
 from app.database import get_db
 from app.models import SensorVersion
 from app.schemas import SensorVersionCreate
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/sensor-version", tags=["Sensor Version"])
 

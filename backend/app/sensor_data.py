@@ -1,6 +1,6 @@
-import httpx
-from typing import Optional, List
 from datetime import datetime
+
+import httpx
 from pydantic import BaseModel
 
 
@@ -8,17 +8,17 @@ class SensorDataResponse(BaseModel):
     latitude: float
     longitude: float
     timestamp: datetime
-    light: Optional[float] = None
+    light: float | None = None
 
 
 async def fetch_sensor_data(
     base_url: str,
     internal_id: str,
-    date_from: Optional[datetime] = None,
-    date_to: Optional[datetime] = None,
-    limit: Optional[int] = None,
-    order: Optional[str] = None,
-) -> List[SensorDataResponse]:
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+    limit: int | None = None,
+    order: str | None = None,
+) -> list[SensorDataResponse]:
     """Запрос данных к удалённому сервису."""
 
     params = {"internal_id": internal_id}

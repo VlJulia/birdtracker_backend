@@ -1,5 +1,6 @@
 import socket
 import struct
+
 from crcmod.predefined import mkCrcFun
 
 # --- Константы из вашего парсера ---
@@ -70,7 +71,7 @@ def main():
 
     except ConnectionResetError:
         print("Ошибка 10054: Сервер не ответил (порт закрыт или контейнер не запущен).")
-    except socket.timeout:
+    except TimeoutError:
         print("Таймаут: Сервер не прислал ответ за 3 секунды.")
     except Exception as e:
         print(f"Произошла ошибка: {e}")

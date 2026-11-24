@@ -1,5 +1,6 @@
 import asyncio
 from logging import getLogger
+
 from app.adapters import adapter
 
 logger = getLogger(__name__)
@@ -9,13 +10,17 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def __init__(self, stop_event: asyncio.Event):
         self.stop_event = stop_event
         self.transport = None
+        self._tasks: set[asyncio.Task] = set()
 
     def connection_made(self, transport):
         self.transport = transport
         logger.info(f"UDP server started on {transport.get_extra_info('sockname')}")
 
     def datagram_received(self, data: bytes, addr):
-        asyncio.create_task(self._process(data, addr))
+        # без ссылки на задачу сборщик мусора может прервать обработку пакета
+        task = asyncio.create_task(self._process(data, addr))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def _process(self, data: bytes, addr):
         logger.info(f"Processing request from UDP client {addr}")
